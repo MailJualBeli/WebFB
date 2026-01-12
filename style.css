@@ -1,0 +1,102 @@
+:root {
+    --primary: #f59e0b;
+    --secondary: #ef4444;
+    --facebook: #1877F2;
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --white: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; color: var(--white); overflow: hidden;
+}
+
+.container { text-align: center; position: relative; z-index: 1; }
+
+h1 {
+    font-weight: 800; font-size: 2.2rem; margin-bottom: 25px;
+    background: linear-gradient(to right, #fff, var(--primary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-transform: uppercase; letter-spacing: 2px;
+}
+
+.wheel-box {
+    position: relative; width: 380px; height: 380px; margin: 0 auto;
+    border: 12px solid #334155; border-radius: 50%;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 30px var(--primary);
+}
+
+.pointer {
+    position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+    width: 50px; height: 50px; background: var(--secondary);
+    clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+    border-top: 2px solid white;
+}
+
+/* Pastikan di style.css bagian ini 5s */
+canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+}
+
+.spin-btn {
+    margin-top: 35px; padding: 15px 60px; font-size: 1.3rem; font-weight: 800;
+    color: #000; background: linear-gradient(45deg, var(--primary), #fbbf24);
+    border: none; border-radius: 50px; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.5); text-transform: uppercase;
+}
+
+.spin-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
+
+/* Modal */
+.modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(10px);
+    justify-content: center; align-items: center; z-index: 1000;
+}
+
+.modal-content {
+    background: var(--card-bg); padding: 40px 30px; border-radius: 30px;
+    text-align: center; max-width: 420px; width: 92%;
+    border: 2px solid var(--primary);
+    animation: modalPop 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.2);
+}
+
+@keyframes modalPop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.prize-img-popup {
+    width: 160px; height: 160px; object-fit: contain;
+    margin: 20px auto; display: block;
+    filter: drop-shadow(0 0 15px var(--primary));
+}
+
+.prize-name { display: block; font-size: 1.8rem; font-weight: 800; color: #fbbf24; margin-bottom: 25px; }
+
+.btn-action {
+    width: 100%; padding: 16px; border: none; border-radius: 15px;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
+}
+
+.btn-claim { background: var(--primary); color: #000; }
+
+.btn-fb {
+    background: var(--facebook); color: white; display: flex;
+    align-items: center; justify-content: center; gap: 12px;
+}
+
+.fb-logo {
+    background: white; color: var(--facebook); width: 28px; height: 28px;
+    border-radius: 6px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+}
+
+.cancel-link { margin-top: 25px; font-size: 0.85rem; color: #64748b; cursor: pointer; text-decoration: underline; }
+
+.hidden { display: none; }
